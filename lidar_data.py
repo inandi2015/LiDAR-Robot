@@ -89,12 +89,14 @@ class lidarReader:
 	    x4 = data[3]
 	    dist_mm = x1 | ((x2 & 0x3f) << 8) # distance
 	    quality = x3 | (x4 << 8) # quality
+	    if(angle >= 180):
+		self.container[angle-180] = dist_mm, quality
+	    else:
+		self.container[angle+180] = dist_mm, quality
+	    
 	    #if(quality != 0): # protect data integrity
 	    if(quality != 0 and dist_mm >= 150): # protect data integrity
-		#print(angle, dist_mm, quality) # data coming back is accurate
-		
-		self.container[angle] = dist_mm, quality
-		
+		#print(angle, dist_mm, quality) # data coming back is accurate		
 		if(angle > 185 and angle <= 265): # index:0-79
 		    self.left_container[angle-186] = dist_mm
 		elif(angle >= 95 and angle < 175): # index:0-79
@@ -109,8 +111,6 @@ class lidarReader:
 		elif(angle >= 265 and angle <= 275):
 		    #print(angle, dist_mm)
 		    self.angle_270 = dist_mm
-	    else:
-		self.container[angle] = ()
 	
 	def checksum(self, data):
 	    # Compute and return the checksum as an int
