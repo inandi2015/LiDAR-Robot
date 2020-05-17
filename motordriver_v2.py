@@ -3,7 +3,7 @@
 import pigpio
 
 WORKING_FREQUENCY = 1000 # L298N works at 1kHz
-multiplierForward = 0.85
+multiplierForward = 1
 multiplierTurn = 1
 
 class MotorController:
@@ -11,44 +11,44 @@ class MotorController:
 		self.controller = pigpio.pi() # access the local pi's GPIO
 		# GPIO22 GPIO23 GPIO24 GPIO25
 		# 1 0 1 0
-		self.controller.write(22, 0)
-		self.controller.write(23, 1)
-		self.controller.write(24, 0)
-		self.controller.write(25, 1)
+		self.controller.write(22, 1)
+		self.controller.write(23, 0)
+		self.controller.write(24, 1)
+		self.controller.write(25, 0)
 		self.controller.hardware_PWM(13, WORKING_FREQUENCY, 0) 
 		self.controller.hardware_PWM(12, WORKING_FREQUENCY, 0) 
 		
 	def forward(self):
-		self.controller.write(22, 0)
-		self.controller.write(23, 1)
-		self.controller.write(24, 0)
-		self.controller.write(25, 1)
-		self.controller.hardware_PWM(13, WORKING_FREQUENCY, 350000*multiplierForward) 
-		self.controller.hardware_PWM(12, WORKING_FREQUENCY, 350000*multiplierForward) 
+		self.controller.write(22, 1)
+		self.controller.write(23, 0)
+		self.controller.write(24, 1)
+		self.controller.write(25, 0)
+		self.controller.hardware_PWM(13, WORKING_FREQUENCY, 300000*multiplierForward) 
+		self.controller.hardware_PWM(12, WORKING_FREQUENCY, 300000*multiplierForward) 
 	
 	def stop(self):
-		self.controller.write(22, 0)
-		self.controller.write(23, 1)
-		self.controller.write(24, 0)
-		self.controller.write(25, 1)
+		self.controller.write(22, 1)
+		self.controller.write(23, 0)
+		self.controller.write(24, 1)
+		self.controller.write(25, 0)
 		self.controller.hardware_PWM(13, WORKING_FREQUENCY, 0) 
 		self.controller.hardware_PWM(12, WORKING_FREQUENCY, 0)
 	
-	def turn_left(self):
+	def turn_left(self, index = None):
 		self.controller.write(22, 0)
 		self.controller.write(23, 1)
 		self.controller.write(24, 1)
 		self.controller.write(25, 0)
-		self.controller.hardware_PWM(13, WORKING_FREQUENCY, 720000*multiplierTurn) 
-		self.controller.hardware_PWM(12, WORKING_FREQUENCY, 720000*multiplierTurn) 
+		self.controller.hardware_PWM(13, WORKING_FREQUENCY, 700000*multiplierTurn) 
+		self.controller.hardware_PWM(12, WORKING_FREQUENCY, 700000*multiplierTurn) 
 	
-	def turn_right(self):
+	def turn_right(self, index = None):
 		self.controller.write(22, 1)
 		self.controller.write(23, 0)
 		self.controller.write(24, 0)
 		self.controller.write(25, 1)
-		self.controller.hardware_PWM(13, WORKING_FREQUENCY, 720000*multiplierTurn) 
-		self.controller.hardware_PWM(12, WORKING_FREQUENCY, 720000*multiplierTurn) 
+		self.controller.hardware_PWM(13, WORKING_FREQUENCY, 700000*multiplierTurn) 
+		self.controller.hardware_PWM(12, WORKING_FREQUENCY, 700000*multiplierTurn) 
 		
 
 if __name__ == "__main__":

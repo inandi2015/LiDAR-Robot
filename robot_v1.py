@@ -1,6 +1,6 @@
 import numpy as np
 from lidar_data import lidarReader
-from motordriver_v1 import MotorController
+from motordriver_v3 import MotorController
 import threading
 import time
 
