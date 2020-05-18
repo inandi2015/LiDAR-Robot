@@ -11,13 +11,13 @@ class lidarReader:
 	    self.serialport.reset_output_buffer()
 	    self.state = 0
 	    # the container stores the distance for a certain angle
-	    #self.container = np.zeros(360)
-	    self.container = [()]*360
+	    self.container = np.zeros(360)
+	    #self.container = [()]*360
 	    self.index = None
 	    self.speed = None
-	    self.angle_180 = None
-	    self.angle_90 = None
-	    self.angle_270 = None
+	    self.angle_180 = 30000 # 30 meters is enough to be the threshold
+	    self.angle_90 = 30000
+	    self.angle_270 = 30000
 	    self.right_container = np.empty(80) # 95-175
 	    self.left_container = np.empty(80) #185-265
 	    self.right_container.fill(30000) # The maximum distance that the lidar can detect is 3 meters
@@ -27,7 +27,7 @@ class lidarReader:
 	    self.thread.start()
 		
 	def getdata(self):
-	    return [data if(len(data)) == 2 else (0,0) for data in self.container]
+	    return list(self.container)
 
 	def read(self):
 	    while True:
@@ -89,26 +89,26 @@ class lidarReader:
 	    x4 = data[3]
 	    dist_mm = x1 | ((x2 & 0x3f) << 8) # distance
 	    quality = x3 | (x4 << 8) # quality
-	    if(angle >= 180):
-		self.container[angle-180] = dist_mm, quality
-	    else:
-		self.container[angle+180] = dist_mm, quality
-	    
 	    #if(quality != 0): # protect data integrity
+	    if(angle >= 180):
+		self.container[angle-180] = dist_mm
+	    else:
+		self.container[angle+180] = dist_mm
+	    
 	    if(quality != 0 and dist_mm >= 150): # protect data integrity
-		#print(angle, dist_mm, quality) # data coming back is accurate		
+		#print(angle, dist_mm, quality) # data coming back is accurate
 		if(angle > 185 and angle <= 265): # index:0-79
 		    self.left_container[angle-186] = dist_mm
 		elif(angle >= 95 and angle < 175): # index:0-79
 		    self.right_container[angle-95] = dist_mm
 		    
-		if(angle >= 85 and angle <= 95):
+		if(angle >= 90 and angle <= 95):
 		    #print(angle, dist_mm)
 		    self.angle_90 = dist_mm
 		elif(angle >= 175 and angle <= 185):
 		    #print(angle, dist_mm)
 		    self.angle_180 = dist_mm
-		elif(angle >= 265 and angle <= 275):
+		elif(angle >= 265 and angle <= 270):
 		    #print(angle, dist_mm)
 		    self.angle_270 = dist_mm
 	

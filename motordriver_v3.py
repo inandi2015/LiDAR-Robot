@@ -3,8 +3,8 @@
 import pigpio
 
 WORKING_FREQUENCY = 1000 # L298N works at 1kHz
-multiplierForward = 1
-multiplierTurn = 1
+multiplierForward = 1.2
+multiplierTurn = 1.2
 
 class MotorController:
 	def __init__(self):
@@ -33,6 +33,15 @@ class MotorController:
 		self.controller.hardware_PWM(12, WORKING_FREQUENCY, 300000*multiplierForward) 
 		self.lastPWM1, self.lastPWM2 = 300000*multiplierForward, 300000*multiplierForward
 	
+	def backward(self):
+		self.controller.write(22, 0)
+		self.controller.write(23, 1)
+		self.controller.write(24, 0)
+		self.controller.write(25, 1)
+		self.controller.hardware_PWM(13, WORKING_FREQUENCY, 300000*multiplierForward) 
+		self.controller.hardware_PWM(12, WORKING_FREQUENCY, 300000*multiplierForward) 
+		self.lastPWM1, self.lastPWM2 = 0, 0
+	
 	def stop(self):
 		if(self.lastPWM1 == 0 and self.lastPWM2 == 0):
 			return
@@ -54,6 +63,7 @@ class MotorController:
 			current_PWM1, current_PWM2 = 700000*multiplierTurn, 700000*multiplierTurn # front too close
 		else:
 			current_PWM1, current_PWM2 = self.speed_table[index]
+			#current_PWM1, current_PWM2 = current_PWM1 * multiplierTurn, current_PWM2 * multiplierTurn
 		if(self.lastPWM1 == current_PWM1 and self.lastPWM2 == current_PWM2):
 			return
 		self.controller.hardware_PWM(13, WORKING_FREQUENCY, current_PWM1) 
@@ -69,7 +79,8 @@ class MotorController:
 		if not index:
 			current_PWM1, current_PWM2 = 700000*multiplierTurn, 700000*multiplierTurn # front too close
 		else:
-			current_PWM1, current_PWM2 = self.speed_table[-index]
+			current_PWM1, current_PWM2 = self.speed_table[len(self.speed_table)-1-index]
+			#current_PWM1, current_PWM2 = current_PWM1 * multiplierTurn, current_PWM2 * multiplierTurn
 		if(self.lastPWM1 == current_PWM1 and self.lastPWM2 == current_PWM2):
 			return
 		self.controller.hardware_PWM(13, WORKING_FREQUENCY, current_PWM1) 
@@ -77,18 +88,19 @@ class MotorController:
 		self.lastPWM1, self.lastPWM2 = current_PWM1, current_PWM2
 		
 	def fill_speed_tables(self):
+		offset = 20000
 		for i in range(10):
-			self.speed_table[i] = (560000, 560000)
+			self.speed_table[i] = (620000+offset, 620000+offset)
 		for i in range(10, 20):
-			self.speed_table[i] = (600000, 600000)
+			self.speed_table[i] = (670000+offset, 670000+offset)
 		for i in range(20, 30):
-			self.speed_table[i] = (650000, 650000)
+			self.speed_table[i] = (700000+offset, 700000+offset)
 		for i in range(30, 40):
-			self.speed_table[i] = (700000, 700000)
+			self.speed_table[i] = (720000+offset, 720000+offset)
 		for i in range(40, 50):
-			self.speed_table[i] = (750000, 750000)
+			self.speed_table[i] = (730000+offset, 730000+offset)
 		for i in range(50, 60):
-			self.speed_table[i] = (770000, 770000)
+			self.speed_table[i] = (735000+offset, 735000+offset)
 		for i in range(60, 70):
 			self.speed_table[i] = (790000, 790000)
 		for i in range(70, 80):
