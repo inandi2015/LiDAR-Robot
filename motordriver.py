@@ -94,9 +94,9 @@ class MotorController:
 	def fill_speed_tables(self):
 		
 		for i in range(10):
-			self.speed_table[i] = (450000, 200000)
+			self.speed_table[i] = (580000, 360000)
 		for i in range(10, 20):
-			self.speed_table[i] = (500000, 300000)
+			self.speed_table[i] = (650000, 380000)
 		for i in range(20, 30):
 			self.speed_table[i] = (670000, 400000)
 		for i in range(30, 40):

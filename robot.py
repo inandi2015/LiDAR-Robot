@@ -54,8 +54,8 @@ class Robot:
 	def navigate(self):
 		while self.navigating:
 			time.sleep(0.01) # (yield) allowing reading data from the serailport
-			#if(self.messages.empty()): # The camera doesn't detect one traffic sign message.empty()
-			if(True): # The camera doesn't detect one traffic sign message.empty()
+			if(self.messages.empty()): # The camera doesn't detect one traffic sign message.empty()
+			#if(True): # The camera doesn't detect one traffic sign message.empty()
 				front_too_close, left_too_close, right_too_close = False, False, False
 				if(self.lidar.angle_180 < 400):
 					front_too_close = True
